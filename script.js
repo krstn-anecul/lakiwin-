@@ -777,9 +777,8 @@
 
     const headLogoW = 840;
     const headLogoH = headLogoW * ratio;
-    const headLogoY = 104;
-    const ribbonCY = headLogoY + headLogoH + 40;
-    const TOP = Math.round(ribbonCY + 29 + 44);   // first photo starts just below the ribbon
+    const headLogoY = 108;
+    const TOP = Math.round(headLogoY + headLogoH + 66);   // first photo starts just below the logo
     const photosBottom = TOP + PH * TOTAL_SHOTS + GAP * (TOTAL_SHOTS - 1);
 
     const footLogoW = 600;
@@ -813,33 +812,9 @@
     ctx.stroke();
     drawBulbs(ctx, W, H, 46, T);
 
-    // ---- header: logo + ribbon only (no stickers)
+    // ---- header: logo only
     ctx.drawImage(logoImg, (W - headLogoW) / 2, headLogoY, headLogoW, headLogoH);
 
-    // "GAMING PHOTOBOOTH" ribbon
-    ctx.save();
-    ctx.font = `30px ${DISPLAY_FONT}`;
-    setSpacing(ctx, '5px');
-    const ribbonText = 'GAMING PHOTOBOOTH';
-    const rtw = ctx.measureText(ribbonText).width;
-    const rh = 58;
-    const rs = 10;
-    const rw = rtw + 72 + rs;
-    const rx = W / 2 - rw / 2;
-    const ry = ribbonCY - rh / 2;
-    roundPolyPath(ctx, slantPts(rx, ry, rw, rh, rs), 14);
-    ctx.fillStyle = T.ribbonBg;
-    ctx.fill();
-    if (T.ribbonLine) {
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = T.ribbonLine;
-      ctx.stroke();
-    }
-    ctx.fillStyle = T.ribbonFg;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(ribbonText, W / 2 + 2.5, ribbonCY + 2);
-    ctx.restore();
 
     // ---- photos
     for (let i = 0; i < TOTAL_SHOTS; i++) {
