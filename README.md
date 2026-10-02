@@ -1,7 +1,7 @@
 # LakiWin Gaming Photobooth
 
 A branded LakiWin event photobooth that runs entirely in the browser.
-Guests take 4 photos with a 3-2-1 countdown, pick a filter, customize a LakiWin photo strip, and download it as a PNG.
+Guests take 3 photos with a 3-2-1 countdown, pick a filter, customize a LakiWin photo strip, and download it as a PNG.
 
 - No backend, no database, no API keys, no npm.
 - Pure HTML, CSS and JavaScript.
@@ -25,7 +25,8 @@ Guests take 4 photos with a 3-2-1 countdown, pick a filter, customize a LakiWin 
 
 ## Features
 
-- **Flow:** Welcome → Camera → Countdown → Photo 1–4 → Review → Customize → Generate → Download → Start again
+- **Flow:** Welcome → Camera → Countdown → Photo 1–3 → Review → Customize → Generate → Download → Start again
+- **Photos per strip:** 3. To change it, edit `TOTAL_SHOTS` near the top of `script.js`.
 - **Camera:** live webcam preview (mirrored), photo counter, large Capture button. Press **Space** to start too.
 - **Countdown:** 3, 2, 1, GO! before every photo, a flash, then a "PHOTO CAPTURED!" confirmation.
 - **7 real filters** processed pixel-by-pixel on Canvas: Original, Bright, Warm, Cool, Grayscale, Gaming, High Contrast. The preview shows exactly what gets saved.
@@ -33,7 +34,7 @@ Guests take 4 photos with a 3-2-1 countdown, pick a filter, customize a LakiWin 
 - **Custom text** (optional, up to 22 characters) and **optional badge** (GG, LEVEL UP, WINNER, +XP).
 - **Automatic date** in the footer with a calendar icon. It's never hard-coded.
 - **Download** a full-resolution PNG (1200 px wide) named like `lakiwin-photobooth-2026-10-02.png`.
-- **Camera cleanup:** the webcam turns off as soon as the 4th photo is taken, when you leave the camera screen, or when the page closes. It opens again for the next session.
+- **Camera cleanup:** the webcam turns off as soon as the last photo is taken, when you leave the camera screen, or when the page closes. It opens again for the next session.
 - Responsive for laptop, desktop, tablet and phone. Keyboard and screen-reader friendly, and it respects "reduce motion" settings.
 
 ---
@@ -86,7 +87,7 @@ The folder should now look exactly like the tree in **What's inside** above.
 
 1. Double-click `index.html`. It opens in your browser.
 2. Click **START PHOTOBOOTH** and allow camera access when the browser asks.
-3. Take your 4 photos, customize the strip, and click **DOWNLOAD PHOTO**.
+3. Take your 3 photos, customize the strip, and click **DOWNLOAD PHOTO**.
 
 Use **Google Chrome** or **Microsoft Edge** for this option.
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>LakiWin Gaming Photobooth</title>
-  <meta name="description" content="Capture your winning moment with the LakiWin Gaming Photobooth. Four photos, your filter, one branded strip to download.">
+  <meta name="description" content="Capture your winning moment with the LakiWin Gaming Photobooth. Three photos, your filter, one branded strip to download.">
   <meta name="theme-color" content="#221F1F">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='88' height='88' rx='20' fill='%23FBD605' stroke='%23221F1F' stroke-width='8'/%3E%3Cpath d='M50 18L59 40L82 41L64 56L70 79L50 66L30 79L36 56L18 41L41 40Z' fill='%23221F1F'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +62,7 @@
         <h1 class="welcome-title" id="welcomeTitle">GAMING PHOTOBOOTH</h1>
         <p class="welcome-tagline">Get ready. Capture your winning moment.</p>
         <button class="btn btn-primary btn-xl" id="startBtn" type="button">START PHOTOBOOTH</button>
-        <p class="welcome-note">Four photos. Your filter. One strip to keep.</p>
+        <p class="welcome-note">Three photos. Your filter. One strip to keep.</p>
       </div>
 
       <div class="ticker" aria-hidden="true">
@@ -73,7 +73,7 @@
       </div>
     </section>
 
-    <!-- ======================= 2–7. CAMERA + COUNTDOWN + 4 PHOTOS ======================= -->
+    <!-- ======================= CAMERA + COUNTDOWN + PHOTOS ======================= -->
     <section class="screen screen-camera" id="screen-camera" aria-labelledby="cameraTitle" hidden>
       <h2 class="sr-only" id="cameraTitle">Camera</h2>
 
@@ -97,7 +97,7 @@
               <img id="toastImg" alt="">
               <div>
                 <strong id="toastTitle">PHOTO CAPTURED!</strong>
-                <span id="toastSub">1 / 4</span>
+                <span id="toastSub">1 / 3</span>
               </div>
             </div>
 
@@ -113,18 +113,15 @@
         </div>
 
         <aside class="cam-panel" aria-label="Photo controls">
-          <div class="counter" id="counter" aria-label="Photo 1 of 4">
+          <div class="counter" id="counter" aria-label="Photo 1 of 3">
             <span aria-hidden="true">PHOTO</span>
             <span class="counter-num" id="counterNum" aria-hidden="true">1</span>
-            <span aria-hidden="true">/ 4</span>
+            <span aria-hidden="true">/ <span class="js-total">3</span></span>
           </div>
           <p class="prompt" id="prompt">Strike your pose!</p>
 
           <ol class="shots" id="shots" aria-label="Captured photos">
-            <li class="slot is-current"><span>1</span></li>
-            <li class="slot"><span>2</span></li>
-            <li class="slot"><span>3</span></li>
-            <li class="slot"><span>4</span></li>
+            <!-- filled in by script.js (one box per photo) -->
           </ol>
 
           <fieldset class="filters" id="cameraFilters">
@@ -148,7 +145,7 @@
               </svg>
               <span id="captureLabel">CAPTURE</span>
             </button>
-            <p class="capture-hint">Takes 4 photos automatically, with a 3-2-1 countdown before each one.</p>
+            <p class="capture-hint">Takes <span class="js-total">3</span> photos automatically, with a 3-2-1 countdown before each one.</p>
           </div>
         </aside>
       </div>
@@ -159,7 +156,7 @@
       <div class="page">
         <div class="page-head">
           <h2 id="reviewTitle">REVIEW YOUR PHOTOS</h2>
-          <p>Check all four shots. Happy with them? Make your strip. Want another go? Retake them.</p>
+          <p>Check all your shots. Happy with them? Make your strip. Want another go? Retake them.</p>
         </div>
 
         <ul class="review-grid" id="reviewGrid"></ul>
@@ -243,7 +240,7 @@
       <div class="rays" aria-hidden="true"></div>
       <div class="result-layout">
         <div class="result-strip">
-          <img id="resultImg" alt="Your LakiWin photo strip with four photos">
+          <img id="resultImg" alt="Your LakiWin photo strip">
         </div>
         <div class="result-panel">
           <h2 id="resultTitle">YOUR WINNING MOMENT</h2>

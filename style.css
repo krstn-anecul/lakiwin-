@@ -588,7 +588,7 @@ h2:focus, h1:focus { outline: none; }
 
 .shots {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(var(--shots, 3), 1fr);
   gap: 8px;
   margin: 0;
   padding: 0;
@@ -661,10 +661,9 @@ h2:focus, h1:focus { outline: none; }
 }
 .page-head { margin-bottom: 30px; }
 
-/* Keep all four review photos visible on one laptop screen */
+/* All review photos side by side on laptop screens */
 .screen-review .page {
-  max-width: clamp(640px, calc((100vh - 360px) * 1.25 + 130px), 1180px);
-  max-width: clamp(640px, calc((100dvh - 360px) * 1.25 + 130px), 1180px);
+  max-width: 1280px;
   padding-top: 28px;
 }
 .screen-review .actions { margin-top: 36px; }
@@ -684,7 +683,7 @@ h2:focus, h1:focus { outline: none; }
 
 .review-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--shots, 3), minmax(0, 1fr));
   gap: 38px 34px;
   margin: 0;
   padding: 0;
@@ -929,6 +928,7 @@ h2:focus, h1:focus { outline: none; }
 }
 
 @media (max-width: 900px) {
+  .review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   :root { --topbar-h: 62px; }
   .step-label { display: none; }
   .topbar-home img { height: 28px; }

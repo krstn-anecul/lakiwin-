@@ -15,7 +15,8 @@
   const DISPLAY_FONT = '"Bungee", "Arial Black", Impact, sans-serif';
   const BODY_FONT = '"Rubik", "Segoe UI", Arial, sans-serif';
 
-  const TOTAL_SHOTS = 4;
+  // How many photos go on each strip. Change this number to use a different amount (2–4 works best).
+  const TOTAL_SHOTS = 3;
   const PHOTO_ASPECT = 4 / 3;
   const MAX_TEXT = 22;
 
@@ -30,6 +31,8 @@
     'Big winning smile!',
     'Last one. Make it legendary!'
   ];
+  // The last photo always gets the "last one" line
+  const promptFor = (i) => (i === TOTAL_SHOTS - 1 ? PROMPTS[PROMPTS.length - 1] : PROMPTS[i] || PROMPTS[0]);
 
   const FILTER_NAMES = {
     original: 'Original',
@@ -72,7 +75,7 @@
     counter: $('#counter'),
     counterNum: $('#counterNum'),
     prompt: $('#prompt'),
-    slots: $$('#shots .slot'),
+    slots: buildSlots(),
     captureBtn: $('#captureBtn'),
     captureLabel: $('#captureLabel'),
 
@@ -93,6 +96,19 @@
     againBtn: $('#againBtn'),
     editBtn: $('#editBtn')
   };
+
+  // One small preview box per photo in the camera side panel
+  function buildSlots() {
+    const list = document.getElementById('shots');
+    list.innerHTML = '';
+    for (let k = 0; k < TOTAL_SHOTS; k++) {
+      const li = document.createElement('li');
+      li.className = 'slot' + (k === 0 ? ' is-current' : '');
+      li.innerHTML = `<span>${k + 1}</span>`;
+      list.appendChild(li);
+    }
+    return Array.from(list.children);
+  }
 
   const screens = {
     welcome: $('#screen-welcome'),
@@ -755,16 +771,16 @@
     const PW = 1000;
     const PH = PW / PHOTO_ASPECT;   // 750
     const GAP = 44;
-    const TOP = 424;
-    const photosBottom = TOP + PH * TOTAL_SHOTS + GAP * (TOTAL_SHOTS - 1);
 
     const logoImg = T.logo === 'flat' ? logos.flat : logos.main;
     const ratio = logoImg.naturalHeight / logoImg.naturalWidth;
 
     const headLogoW = 840;
     const headLogoH = headLogoW * ratio;
-    const headLogoY = 168;
+    const headLogoY = 104;
     const ribbonCY = headLogoY + headLogoH + 40;
+    const TOP = Math.round(ribbonCY + 29 + 44);   // first photo starts just below the ribbon
+    const photosBottom = TOP + PH * TOTAL_SHOTS + GAP * (TOTAL_SHOTS - 1);
 
     const footLogoW = 600;
     const footLogoH = footLogoW * ratio;
@@ -787,7 +803,7 @@
     // ---- background
     ctx.fillStyle = T.bg;
     ctx.fillRect(0, 0, W, H);
-    drawRayBurst(ctx, W, H, W / 2, 244, 640, T.rays);
+    drawRayBurst(ctx, W, H, W / 2, headLogoY + headLogoH / 2, 640, T.rays);
     drawRayBurst(ctx, W, H, W / 2, footLogoY + footLogoH / 2, 520, T.rays);
 
     // ---- outer border + marquee bulbs
@@ -797,13 +813,7 @@
     ctx.stroke();
     drawBulbs(ctx, W, H, 46, T);
 
-    // ---- header
-    drawSticker(ctx, 'crown', W / 2, 112, 112, 0);
-    drawSticker(ctx, 'coin', 158, 124, 84, -14);
-    drawSticker(ctx, 'sparkle', 250, 104, 40, 0);
-    drawSticker(ctx, 'star', 1042, 122, 84, 12);
-    drawSticker(ctx, 'sparkle', 950, 104, 40, 0);
-
+    // ---- header: logo + ribbon only (no stickers)
     ctx.drawImage(logoImg, (W - headLogoW) / 2, headLogoY, headLogoW, headLogoH);
 
     // "GAMING PHOTOBOOTH" ribbon
@@ -830,8 +840,6 @@
     ctx.textBaseline = 'middle';
     ctx.fillText(ribbonText, W / 2 + 2.5, ribbonCY + 2);
     ctx.restore();
-    drawSticker(ctx, 'sparkle', rx - 34, ribbonCY, 40, 0);
-    drawSticker(ctx, 'sparkle', rx + rw + 34, ribbonCY, 40, 0);
 
     // ---- photos
     for (let i = 0; i < TOTAL_SHOTS; i++) {
@@ -865,17 +873,18 @@
     }
 
     // ---- stickers around the frames (edges + corners only, never over the middle of a photo)
-    const j1 = TOP + PH + GAP / 2;
-    const j2 = j1 + PH + GAP;
-    const j3 = j2 + PH + GAP;
     drawSticker(ctx, 'reel777', 128, TOP + 4, 136, -10);
     drawSticker(ctx, 'sparkle', 1088, TOP + 8, 58, 0);
-    drawSticker(ctx, 'clover', 100, j1, 96, -10);
-    drawSticker(ctx, 'coin', 1100, j1, 86, 12);
-    drawSticker(ctx, 'star', 100, j2, 88, -8);
-    drawSticker(ctx, 'bell', 1100, j2, 96, 12);
-    drawSticker(ctx, 'coin', 100, j3, 82, -14);
-    drawSticker(ctx, 'clover', 1100, j3, 92, 10);
+    // one sticker on each side of every gap between two photos
+    const leftIcons = [['clover', 96, -10], ['star', 88, -8], ['coin', 82, -14]];
+    const rightIcons = [['coin', 86, 12], ['bell', 96, 12], ['clover', 92, 10]];
+    for (let g = 0; g < TOTAL_SHOTS - 1; g++) {
+      const jy = TOP + (g + 1) * PH + g * GAP + GAP / 2;
+      const [ln, ls, lr] = leftIcons[g % leftIcons.length];
+      const [rn, rs, rr] = rightIcons[g % rightIcons.length];
+      drawSticker(ctx, ln, 100, jy, ls, lr);
+      drawSticker(ctx, rn, 1100, jy, rs, rr);
+    }
     drawSticker(ctx, 'star', 108, photosBottom - 6, 80, 10);
 
     if (opts.badge && opts.badge !== 'none') {
@@ -1055,7 +1064,7 @@
     setCamMessage(null);
     el.captureBtn.disabled = false;
     startPreview();
-    announce('Camera ready. Press Capture to start your 4 photos.');
+    announce(`Camera ready. Press Capture to start your ${TOTAL_SHOTS} photos.`);
   }
 
   function waitForVideo() {
@@ -1161,7 +1170,7 @@
     el.counterNum.classList.remove('bump');
     void el.counterNum.offsetWidth;
     el.counterNum.classList.add('bump');
-    el.prompt.textContent = PROMPTS[i] || PROMPTS[0];
+    el.prompt.textContent = promptFor(i);
     el.slots.forEach((s, k) => s.classList.toggle('is-current', k === i));
   }
 
@@ -1173,7 +1182,7 @@
     });
     el.counterNum.textContent = '1';
     el.counter.setAttribute('aria-label', `Photo 1 of ${TOTAL_SHOTS}`);
-    el.prompt.textContent = PROMPTS[0];
+    el.prompt.textContent = promptFor(0);
   }
 
   function fillSlot(i) {
@@ -1202,7 +1211,7 @@
 
     for (let i = 0; i < TOTAL_SHOTS; i++) {
       setShot(i);
-      announce(`Photo ${i + 1} of ${TOTAL_SHOTS}. ${PROMPTS[i]}`);
+      announce(`Photo ${i + 1} of ${TOTAL_SHOTS}. ${promptFor(i)}`);
       await sleep(i === 0 ? 350 : 550);
       if (!alive()) return;
 
@@ -1235,9 +1244,9 @@
       hideCountdown();
     }
 
-    // All four done
+    // All photos done
     el.toastImg.removeAttribute('src');
-    el.toastTitle.textContent = 'ALL 4 PHOTOS CAPTURED!';
+    el.toastTitle.textContent = `ALL ${TOTAL_SHOTS} PHOTOS CAPTURED!`;
     el.toastSub.textContent = 'GG! Loading your review…';
     el.toast.hidden = false;
     beep(784, 0.12); setTimeout(() => beep(1046, 0.18), 120);
@@ -1522,6 +1531,8 @@
   /* ---------------------------------------------------------
      Boot
      --------------------------------------------------------- */
+  $$('.js-total').forEach((n) => { n.textContent = String(TOTAL_SHOTS); });
+  document.documentElement.style.setProperty('--shots', String(TOTAL_SHOTS));
   protectLogoImages();
   mountStickers();
   ensureFonts();
