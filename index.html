@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LakiWin Gaming Photobooth</title>
+  <meta name="description" content="Capture your winning moment with the LakiWin Gaming Photobooth. Four photos, your filter, one branded strip to download.">
+  <meta name="theme-color" content="#221F1F">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='6' y='6' width='88' height='88' rx='20' fill='%23FBD605' stroke='%23221F1F' stroke-width='8'/%3E%3Cpath d='M50 18L59 40L82 41L64 56L70 79L50 66L30 79L36 56L18 41L41 40Z' fill='%23221F1F'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-screen="welcome">
+
+  <!-- Screen-reader announcements (countdown, captures, status) -->
+  <div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============ TOP BAR (shown on every screen except Welcome) ============ -->
+  <header class="topbar" id="topbar" hidden>
+    <button class="topbar-home" id="homeBtn" type="button" aria-label="Back to the welcome screen">
+      <img class="js-logo" src="assets/lakiwin-logo.png" alt="LakiWin" width="4039" height="737">
+    </button>
+
+    <ol class="steps" aria-label="Photobooth progress">
+      <li data-step="shoot"><span class="step-num">1</span><span class="step-label">Shoot</span></li>
+      <li data-step="review"><span class="step-num">2</span><span class="step-label">Review</span></li>
+      <li data-step="customize"><span class="step-num">3</span><span class="step-label">Customize</span></li>
+      <li data-step="download"><span class="step-num">4</span><span class="step-label">Download</span></li>
+    </ol>
+
+    <button class="icon-btn" id="soundBtn" type="button" aria-pressed="true" aria-label="Sound effects on. Press to mute.">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
+        <path class="snd-on" d="M16.2 8.6a5 5 0 0 1 0 6.8M18.8 6a8.6 8.6 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="snd-off" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- ======================= 1. WELCOME ======================= -->
+    <section class="screen screen-welcome" id="screen-welcome" aria-labelledby="welcomeTitle">
+      <div class="rays" aria-hidden="true"></div>
+
+      <div class="welcome-stickers" aria-hidden="true">
+        <span class="sticker w-crown" data-icon="crown"></span>
+        <span class="sticker w-777" data-icon="reel777"></span>
+        <span class="sticker w-bell" data-icon="bell"></span>
+        <span class="sticker w-star" data-icon="star"></span>
+        <span class="sticker w-coin" data-icon="coin"></span>
+        <span class="sticker w-coin2" data-icon="coin"></span>
+        <span class="sticker w-clover" data-icon="clover"></span>
+        <span class="sticker w-sparkle" data-icon="sparkle"></span>
+        <span class="sticker w-sparkle2" data-icon="sparkle"></span>
+      </div>
+
+      <div class="welcome-inner">
+        <p class="ready-badge"><span class="ready-dot" aria-hidden="true"></span>READY PLAYER?</p>
+        <img class="welcome-logo js-logo" src="assets/lakiwin-logo.png" alt="LakiWin" width="4039" height="737">
+        <h1 class="welcome-title" id="welcomeTitle">GAMING PHOTOBOOTH</h1>
+        <p class="welcome-tagline">Get ready. Capture your winning moment.</p>
+        <button class="btn btn-primary btn-xl" id="startBtn" type="button">START PHOTOBOOTH</button>
+        <p class="welcome-note">Four photos. Your filter. One strip to keep.</p>
+      </div>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>GG</span><i></i><span>LEVEL UP</span><i></i><span>777</span><i></i><span>WINNER</span><i></i><span>+XP</span><i></i><span>READY PLAYER?</span><i></i>
+          <span>GG</span><i></i><span>LEVEL UP</span><i></i><span>777</span><i></i><span>WINNER</span><i></i><span>+XP</span><i></i><span>READY PLAYER?</span><i></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 2–7. CAMERA + COUNTDOWN + 4 PHOTOS ======================= -->
+    <section class="screen screen-camera" id="screen-camera" aria-labelledby="cameraTitle" hidden>
+      <h2 class="sr-only" id="cameraTitle">Camera</h2>
+
+      <div class="cam-layout">
+        <div class="stage">
+          <div class="viewfinder">
+            <video id="video" playsinline muted autoplay aria-hidden="true"></video>
+            <canvas id="preview" width="800" height="600" role="img" aria-label="Live camera preview"></canvas>
+
+            <span class="vf-corner tl" aria-hidden="true"></span>
+            <span class="vf-corner tr" aria-hidden="true"></span>
+            <span class="vf-corner bl" aria-hidden="true"></span>
+            <span class="vf-corner br" aria-hidden="true"></span>
+            <span class="vf-live" aria-hidden="true"><i></i>LIVE</span>
+            <span class="vf-filter" id="vfFilter" aria-hidden="true">Original</span>
+
+            <div class="countdown" id="countdown" aria-hidden="true"><span id="countdownNum"></span></div>
+            <div class="flash" id="flash" aria-hidden="true"></div>
+
+            <div class="toast" id="toast" hidden>
+              <img id="toastImg" alt="">
+              <div>
+                <strong id="toastTitle">PHOTO CAPTURED!</strong>
+                <span id="toastSub">1 / 4</span>
+              </div>
+            </div>
+
+            <div class="cam-message" id="camMessage" hidden>
+              <div class="cam-message-inner">
+                <span class="sticker cam-msg-icon" data-icon="star" aria-hidden="true"></span>
+                <h3 id="camMessageTitle">Opening your camera…</h3>
+                <p id="camMessageText">Allow camera access when your browser asks.</p>
+                <button class="btn btn-primary" id="retryBtn" type="button" hidden>TRY AGAIN</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="cam-panel" aria-label="Photo controls">
+          <div class="counter" id="counter" aria-label="Photo 1 of 4">
+            <span aria-hidden="true">PHOTO</span>
+            <span class="counter-num" id="counterNum" aria-hidden="true">1</span>
+            <span aria-hidden="true">/ 4</span>
+          </div>
+          <p class="prompt" id="prompt">Strike your pose!</p>
+
+          <ol class="shots" id="shots" aria-label="Captured photos">
+            <li class="slot is-current"><span>1</span></li>
+            <li class="slot"><span>2</span></li>
+            <li class="slot"><span>3</span></li>
+            <li class="slot"><span>4</span></li>
+          </ol>
+
+          <fieldset class="filters" id="cameraFilters">
+            <legend>FILTER</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="filter" value="original" checked><span>Original</span></label>
+              <label class="chip"><input type="radio" name="filter" value="bright"><span>Bright</span></label>
+              <label class="chip"><input type="radio" name="filter" value="warm"><span>Warm</span></label>
+              <label class="chip"><input type="radio" name="filter" value="cool"><span>Cool</span></label>
+              <label class="chip"><input type="radio" name="filter" value="grayscale"><span>Grayscale</span></label>
+              <label class="chip"><input type="radio" name="filter" value="gaming"><span>Gaming</span></label>
+              <label class="chip"><input type="radio" name="filter" value="contrast"><span>High Contrast</span></label>
+            </div>
+          </fieldset>
+
+          <div class="capture-wrap">
+            <button class="btn btn-primary btn-xl btn-capture" id="captureBtn" type="button" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+                <circle cx="12" cy="13.2" r="3.6" fill="none" stroke="currentColor" stroke-width="2.4"/>
+              </svg>
+              <span id="captureLabel">CAPTURE</span>
+            </button>
+            <p class="capture-hint">Takes 4 photos automatically, with a 3-2-1 countdown before each one.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ======================= 8. REVIEW ======================= -->
+    <section class="screen screen-review" id="screen-review" aria-labelledby="reviewTitle" hidden>
+      <div class="page">
+        <div class="page-head">
+          <h2 id="reviewTitle">REVIEW YOUR PHOTOS</h2>
+          <p>Check all four shots. Happy with them? Make your strip. Want another go? Retake them.</p>
+        </div>
+
+        <ul class="review-grid" id="reviewGrid"></ul>
+
+        <div class="actions">
+          <button class="btn btn-outline" id="retakeBtn" type="button">RETAKE PHOTOS</button>
+          <button class="btn btn-primary btn-lg" id="toCustomizeBtn" type="button">CUSTOMIZE YOUR STRIP</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 9–10. CUSTOMIZE + GENERATE ======================= -->
+    <section class="screen screen-customize" id="screen-customize" aria-labelledby="customizeTitle" hidden>
+      <div class="customize-layout">
+        <div class="strip-preview-wrap">
+          <canvas id="stripPreview" width="1200" height="4200" role="img" aria-label="Live preview of your photo strip"></canvas>
+          <p class="preview-caption">Live preview</p>
+        </div>
+
+        <div class="customize-panel">
+          <h2 id="customizeTitle">CUSTOMIZE YOUR STRIP</h2>
+
+          <fieldset class="opt">
+            <legend>STRIP COLOR</legend>
+            <div class="swatches">
+              <label class="swatch"><input type="radio" name="theme" value="yellow" checked><span><i class="sw sw-yellow"></i>YELLOW</span></label>
+              <label class="swatch"><input type="radio" name="theme" value="black"><span><i class="sw sw-black"></i>BLACK</span></label>
+              <label class="swatch"><input type="radio" name="theme" value="white"><span><i class="sw sw-white"></i>WHITE</span></label>
+            </div>
+          </fieldset>
+
+          <div class="opt">
+            <label class="opt-label" for="customText">ADD YOUR TEXT</label>
+            <input class="text-input" id="customText" type="text" maxlength="22" placeholder="Type something..." autocomplete="off" aria-describedby="textHint">
+            <div class="suggestions" aria-label="Text ideas">
+              <button type="button" class="suggest" data-text="BEST NIGHT!">BEST NIGHT!</button>
+              <button type="button" class="suggest" data-text="PLAYER 1">PLAYER 1</button>
+              <button type="button" class="suggest" data-text="GG!">GG!</button>
+              <button type="button" class="suggest" data-text="WINNER!">WINNER!</button>
+              <button type="button" class="suggest" data-text="MY LUCKY DAY">MY LUCKY DAY</button>
+            </div>
+            <p class="hint" id="textHint">Optional. Leave it empty to skip. <span id="textCount">0 / 22</span></p>
+          </div>
+
+          <fieldset class="opt">
+            <legend>OPTIONAL BADGE</legend>
+            <div class="chips chips-light">
+              <label class="chip"><input type="radio" name="badge" value="none" checked><span>No badge</span></label>
+              <label class="chip chip-badge"><input type="radio" name="badge" value="GG"><span>GG</span></label>
+              <label class="chip chip-badge"><input type="radio" name="badge" value="LEVEL UP"><span>LEVEL UP</span></label>
+              <label class="chip chip-badge"><input type="radio" name="badge" value="WINNER"><span>WINNER</span></label>
+              <label class="chip chip-badge"><input type="radio" name="badge" value="+XP"><span>+XP</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="opt">
+            <legend>PHOTO FILTER</legend>
+            <div class="chips chips-light">
+              <label class="chip"><input type="radio" name="stripFilter" value="original" checked><span>Original</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="bright"><span>Bright</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="warm"><span>Warm</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="cool"><span>Cool</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="grayscale"><span>Grayscale</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="gaming"><span>Gaming</span></label>
+              <label class="chip"><input type="radio" name="stripFilter" value="contrast"><span>High Contrast</span></label>
+            </div>
+          </fieldset>
+
+          <p class="form-error" id="generateError" role="alert" hidden></p>
+
+          <div class="actions">
+            <button class="btn btn-outline" id="backToReviewBtn" type="button">BACK</button>
+            <button class="btn btn-primary btn-lg" id="generateBtn" type="button">GENERATE STRIP</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 11–12. RESULT + DOWNLOAD + START AGAIN ======================= -->
+    <section class="screen screen-result" id="screen-result" aria-labelledby="resultTitle" hidden>
+      <div class="rays" aria-hidden="true"></div>
+      <div class="result-layout">
+        <div class="result-strip">
+          <img id="resultImg" alt="Your LakiWin photo strip with four photos">
+        </div>
+        <div class="result-panel">
+          <h2 id="resultTitle">YOUR WINNING MOMENT</h2>
+          <p>Your strip is ready. Download it as a PNG and share it with your crew.</p>
+          <button class="btn btn-primary btn-xl" id="downloadBtn" type="button">DOWNLOAD PHOTO</button>
+          <p class="file-name" id="fileName"></p>
+          <button class="btn btn-ghost" id="againBtn" type="button">TAKE ANOTHER</button>
+          <button class="link-btn" id="editBtn" type="button">Edit this strip</button>
+          <p class="hint mobile-hint">On a phone? You can also press and hold the strip to save it.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Backup copy of the logo (used if assets/ is missing, or when index.html is opened from your computer) -->
+  <script src="logo-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
